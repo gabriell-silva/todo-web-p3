@@ -1,7 +1,7 @@
 export default class TaskService {
 
-  constructor(axiosIntance) {
-    this.api = axiosIntance
+  constructor(axiosInstance) {
+    this.api = axiosInstance
   }
 
   async getAll() {

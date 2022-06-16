@@ -1,11 +1,12 @@
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 import { useAxios } from "../hooks/useAxios";
+import { toast } from "react-toastify";
 import TaskService from "../services/task.service";
 
 export const TasksContext = createContext({});
 
 export const TaskProvider = ({ children }) => {
-  const [tasks, setTasks] = useState([]);
+  const [ tasks, setTasks ] = useState([]);
 
   const axiosInstance = useAxios();
 
@@ -25,12 +26,11 @@ export const TaskProvider = ({ children }) => {
         const newTask = await taskService.add(task);
         tasksCopy.push(newTask);
         setTasks(tasksCopy);
+        toast.success("Tarefa adicionada com sucesso");
       } catch (error) {
-        alert("não foi possivel adicionar a tarefa");
+        toast.error("Não foi possível adicionar a tarefa");
       }
-    },
-    [axiosInstance, tasks]
-  );
+    }, [axiosInstance, tasks]);
 
   const updateTask = useCallback(
     async (task) => {
@@ -45,7 +45,7 @@ export const TaskProvider = ({ children }) => {
         Object.assign(tasksCopy[index], task);
         setTasks(tasksCopy);
       } catch (error) {
-        alert("não foi possivel atualizar a tarefa");
+        toast.error("Não foi possível atualizar a tarefa");
       }
     },
     [axiosInstance, tasks]
@@ -64,7 +64,7 @@ export const TaskProvider = ({ children }) => {
         tasksCopy.splice(index, 1);
         setTasks(tasksCopy);
       } catch (error) {
-        alert("não foi possivel remover a tarefa");
+        toast.error("Não foi possível remover a tarefa");
       }
     },
     [axiosInstance, tasks]

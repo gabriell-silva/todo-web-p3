@@ -1,26 +1,56 @@
 import { useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Template from "../../containers/Template";
+import { useAuth } from "../../hooks/useAuth";
 
 import styles from "./SignUp.module.scss";
 
 const SignUp = () => {
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
+
   const nameInputRef = useRef();
   const ageInputRef = useRef();
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
   const passwordConfirmationInputRef = useRef();
-
-  const handleSubmit = (event) => {
+  
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.table({
-      name: nameInputRef.current.value,
-      age: ageInputRef.current.value,
-      email: emailInputRef.current.value,
-      password: passwordInputRef.current.value,
-      confirmation: passwordConfirmationInputRef.current.value,
-    });
-  };
+
+    const name = nameInputRef.current.value.trim();
+    const age = ageInputRef.current.value.trim();
+    const email = emailInputRef.current.value.trim();
+    const password = passwordInputRef.current.value.trim();
+    const confirmation = passwordConfirmationInputRef.current.value.trim();
+
+    if ( !name 
+        || !age
+        || !email
+        || !password
+        || !confirmation
+      ) {
+        return toast.error("Preencha todos os campos");
+      }
+
+    if (password !== confirmation) {
+      return toast.error("As senhas não conferem");
+    }
+
+    if (password.length < 8) {
+      return toast.error("A senha deve ter no mínimo 8 caracteres");
+    }
+
+    try {
+      const dataUser = { name, age, email, password };
+      await signUp(dataUser);
+      toast.success("Usuário cadastrado com sucesso");
+      navigate("/");
+    } catch (error) {
+      return toast.error(error.message);
+    }
+  }
 
   return (
     <Template title="Cadastrar-se">

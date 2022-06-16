@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 export const useAxios = () => {
   const navigate = useNavigate();
 
-  const instance = axios.create({
+  const axiosInstance = axios.create({
     baseURL: "http://localhost:3333",
     timeout: 1000,
   });
 
-  instance.interceptors.request.use(
+  axiosInstance.interceptors.request.use(
     (config) => {
       config.headers["Authorization"] = `Bearer ${localStorage.getItem(
         "@taskapp:token"
@@ -21,7 +21,7 @@ export const useAxios = () => {
     }
   );
 
-  instance.interceptors.response.use(
+  axiosInstance.interceptors.response.use(
     (response) => {
       return response;
     },
@@ -39,5 +39,5 @@ export const useAxios = () => {
     }
   );
 
-  return instance;
+  return axiosInstance;
 };

@@ -16,6 +16,14 @@ const AuthProvider = ({ children }) => {
     return {};
   });
 
+  const signUp = async ({ name, email, password }) => {
+    try {
+      await api.post("users", { name, email, password });
+    } catch (error) {
+      throw new Error("Falha ao criar usuário");
+    }
+  };
+
   const signIn = async ({ email, password }) => {
     try {
       const { data } = await api.post("users/login", { email, password });
@@ -50,6 +58,7 @@ const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user: data.user,
+        signUp,
         signIn,
         signOut,
         isAuthenticated,
